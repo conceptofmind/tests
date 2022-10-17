@@ -149,4 +149,8 @@ for epoch in range(EPOCHS):
 
         if step % 1000 == 0:
             if accelerator.is_main_process:
-                model.push_to_hub("code-model", commit_message=f"step {step}") 
+                model.push_to_hub("code-model", commit_message=f"step {step}")
+
+
+if accelerator.is_main_process:
+    model.push_to_hub("code-model-final", commit_message=f"step {step}")  
