@@ -1,4 +1,5 @@
 import transformers
+import argparse
 from tqdm import tqdm
 import copy
 from transformers import GPT2Tokenizer, OPTForCausalLM, get_scheduler, default_data_collator
@@ -14,13 +15,23 @@ from accelerate import Accelerator
 
 accelerator = Accelerator()
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--seq_len', default = 2048, type = int)
+parser.add_argument('--batch_size', default = 4, type = int)
+parser.add_argument('--num_proc', default = 16, type = int)
+parser.add_argument('--gradient_accumulation_steps', default = 1, type = int)
+parser.add_argument('--epochs', default = 1, type = int)
+
+parser.add_argument("--resume", default = True, help="Resume training from saved checkpoint.")
+args = parser.parse_args()
+
 # Constants
 
-EPOCHS = 1
-SEQ_LEN = 2048
-gradient_accumulation_steps = 1
-BATCH_SIZE = 4
-NUM_PROC = 16
+EPOCHS = args.epochs
+SEQ_LEN = args.seq_len
+gradient_accumulation_steps = args.gradient_accumulation_steps
+BATCH_SIZE = args.batch_size
+NUM_PROC = args.num_proc
 RESUME_STEP = 0
 
 model = OPTForCausalLM.from_pretrained("facebook/opt-300m")
