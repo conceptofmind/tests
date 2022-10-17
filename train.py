@@ -23,12 +23,12 @@ BATCH_SIZE = 4
 NUM_PROC = 16
 RESUME_STEP = 0
 
-model = OPTForCausalLM.from_pretrained("facebook/opt-125m")
+model = OPTForCausalLM.from_pretrained("facebook/opt-300m")
 
 optimizer = AdamW(model.parameters(), lr=3e-5)
 
 # Load tokenizer
-tokenizer = GPT2Tokenizer.from_pretrained("facebook/opt-125m")
+tokenizer = GPT2Tokenizer.from_pretrained("facebook/opt-300m")
 
 # Load dataset
 load_train_dataset = load_dataset('conceptofmind/code-train-dedup')
