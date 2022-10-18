@@ -31,7 +31,8 @@ gradient_accumulation_steps = args.gradient_accumulation_steps
 save_every = args.save_every
 BATCH_SIZE = args.batch_size
 NUM_PROC = args.num_proc
-RESUME_STEP = 0
+resume_from_checkpoint = args.resume_from_checkpoint
+RESUME_STEP = args.resume_step
 
 model = OPTForCausalLM.from_pretrained("facebook/opt-350m")
 
@@ -108,29 +109,14 @@ model, optimizer, train_dataloader = accelerator.prepare(
     model, optimizer, train_dataloader
 )
 
-# load in the weights and states from a previous save
-# if args.resume_from_checkpoint:
-#     if args.resume_from_checkpoint is not None or args.resume_from_checkpoint != "":
-#         accelerator.print(f"Resumed from checkpoint: {args.resume_from_checkpoint}")
-#         accelerator.load_state(args.resume_from_checkpoint)
-#         path = os.path.basename(args.resume_from_checkpoint)
-#     else:
-#         # Get the most recent checkpoint
-#         dirs = [f.name for f in os.scandir(args.save_dir) if f.is_dir() and "step" in str(f)]
-#         dirs.sort(key=os.path.getctime)
-#         path = dirs[-1]  # Sorts folders by date modified, most recent checkpoint is the last
-#     # Extract the step of the checkpoint to continue from there
-#     training_difference = os.path.splitext(path)[0]
-#     resume_step = int(training_difference.replace("step_", ""))
-
 progress_bar = tqdm(range(EPOCHS * len(train_dataloader)), disable=not accelerator.is_main_process)
 
 model.train()
 for epoch in range(EPOCHS):
     for step, batch in enumerate(train_dataloader, start=1):
-        # if args.resume_from_checkpoint:
-        #     if RESUME_STEP is not None and step < RESUME_STEP:
-        #         continue
+        if resume_from_checkpoint:
+            if RESUME_STEP is not None and step < RESUME_STEP:
+                continue
 
         # Do training
         loss = model(**batch).loss
