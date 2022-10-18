@@ -1,4 +1,3 @@
-import transformers
 import argparse
 from tqdm import tqdm
 import copy
@@ -7,7 +6,6 @@ from datasets import load_dataset
 
 from itertools import chain
 
-import torch
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 
@@ -22,7 +20,7 @@ parser.add_argument('--num_proc', default = 16, type = int)
 parser.add_argument('--gradient_accumulation_steps', default = 1, type = int)
 parser.add_argument('--epochs', default = 1, type = int)
 
-parser.add_argument("--resume", default = True, help="Resume training from saved checkpoint.")
+#parser.add_argument("--resume", default = True, help="Resume training from saved checkpoint.")
 args = parser.parse_args()
 
 # Constants
@@ -149,8 +147,8 @@ for epoch in range(EPOCHS):
 
         if step % 1000 == 0:
             if accelerator.is_main_process:
-                model.push_to_hub("code-model", commit_message=f"step {step}")
+                model.push_to_hub("code-350-model")
 
 
 if accelerator.is_main_process:
-    model.push_to_hub("code-model-final", commit_message=f"step {step}")  
+    model.push_to_hub("code-model-final-350")  
