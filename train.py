@@ -148,8 +148,9 @@ for epoch in range(EPOCHS):
 
         if step % save_every == 0:
             if accelerator.is_main_process:
-                accelerator.wait_for_everyone()
+
                 model.push_to_hub("code-350-model")
+                accelerator.wait_for_everyone()
 
 
 if accelerator.is_main_process:
