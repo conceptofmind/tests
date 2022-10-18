@@ -4,7 +4,7 @@ tokenizer = GPT2Tokenizer.from_pretrained("facebook/opt-350m")
 
 model = OPTForCausalLM.from_pretrained("conceptofmind/code-350-model")
 
-prompt = "def add(a, b): return"
+prompt = "def add(a, b):"
 inputs = tokenizer(prompt, return_tensors="pt")
 
 generate_ids = model.generate(inputs.input_ids, max_length=128)
