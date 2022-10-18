@@ -149,8 +149,8 @@ for epoch in range(EPOCHS):
         if step % save_every == 0:
             if accelerator.is_main_process:
                 unwrapped_model = accelerator.unwrap_model(model)
-                unwrapped_model.push_to_hub("code-350-model")
+                unwrapped_model.push_to_hub("code-350-model", commit_message=f"step {step}")
 
 if accelerator.is_main_process:
     unwrapped_final_model = accelerator.unwrap_model(model)
-    unwrapped_final_model.push_to_hub("code-model-final-350")  
+    unwrapped_final_model.push_to_hub("code-model-final-350", commit_message=f"step {step}")  
