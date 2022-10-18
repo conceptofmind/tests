@@ -19,7 +19,7 @@ parser.add_argument('--batch_size', default = 4, type = int)
 parser.add_argument('--num_proc', default = 16, type = int)
 parser.add_argument('--gradient_accumulation_steps', default = 1, type = int)
 parser.add_argument('--epochs', default = 1, type = int)
-
+parser.add_argument('--save_every', default = 1000, type = int)
 #parser.add_argument("--resume", default = True, help="Resume training from saved checkpoint.")
 args = parser.parse_args()
 
@@ -28,6 +28,7 @@ args = parser.parse_args()
 EPOCHS = args.epochs
 SEQ_LEN = args.seq_len
 gradient_accumulation_steps = args.gradient_accumulation_steps
+save_every = args.save_every
 BATCH_SIZE = args.batch_size
 NUM_PROC = args.num_proc
 RESUME_STEP = 0
@@ -145,7 +146,7 @@ for epoch in range(EPOCHS):
 
         progress_bar.update(1)
 
-        if step % 1000 == 0:
+        if step % save_every == 0:
             if accelerator.is_main_process:
                 model.push_to_hub("code-350-model")
 
