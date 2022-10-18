@@ -20,7 +20,9 @@ parser.add_argument('--num_proc', default = 16, type = int)
 parser.add_argument('--gradient_accumulation_steps', default = 1, type = int)
 parser.add_argument('--epochs', default = 1, type = int)
 parser.add_argument('--save_every', default = 1000, type = int)
-#parser.add_argument("--resume", default = True, help="Resume training from saved checkpoint.")
+parser.add_argument("--resume_from_checkpoint", default = True, type = bool)
+parser.add_argument('--resume_step', default = 0, type = int)
+parser.add_argument('--model_checkpoint', default = None, type = str)
 args = parser.parse_args()
 
 # Constants
@@ -33,8 +35,12 @@ BATCH_SIZE = args.batch_size
 NUM_PROC = args.num_proc
 resume_from_checkpoint = args.resume_from_checkpoint
 RESUME_STEP = args.resume_step
+model_checkpoint = args.model_checkpoint
 
 model = OPTForCausalLM.from_pretrained("facebook/opt-350m")
+
+if resume_from_checkpoint:
+    model = OPTForCausalLM.from_pretrained(model_checkpoint)
 
 optimizer = AdamW(model.parameters(), lr=3e-5)
 
