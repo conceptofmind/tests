@@ -39,8 +39,8 @@ model_checkpoint = args.model_checkpoint
 
 model = OPTForCausalLM.from_pretrained("facebook/opt-350m")
 
-# if resume_from_checkpoint == True:
-#     model = OPTForCausalLM.from_pretrained('conceptofmind/code-350-model')
+if resume_from_checkpoint == True:
+    model = OPTForCausalLM.from_pretrained(model_checkpoint)
 
 optimizer = AdamW(model.parameters(), lr=3e-5)
 
