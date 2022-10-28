@@ -20,7 +20,7 @@ parser.add_argument('--num_proc', default = 16, type = int)
 parser.add_argument('--gradient_accumulation_steps', default = 1, type = int)
 parser.add_argument('--epochs', default = 1, type = int)
 parser.add_argument('--save_every', default = 1000, type = int)
-parser.add_argument("--resume_from_checkpoint", default = True, type = bool)
+parser.add_argument("--resume_from_checkpoint", default = False, type = bool)
 parser.add_argument('--resume_step', default = 0, type = int)
 parser.add_argument('--model_checkpoint', default = None, type = str)
 args = parser.parse_args()
@@ -37,15 +37,15 @@ resume_from_checkpoint = args.resume_from_checkpoint
 RESUME_STEP = args.resume_step
 model_checkpoint = args.model_checkpoint
 
-model = OPTForCausalLM.from_pretrained("facebook/opt-350m")
+model = OPTForCausalLM.from_pretrained("facebook/opt-125m")
 
-if resume_from_checkpoint == True:
-    model = OPTForCausalLM.from_pretrained(model_checkpoint)
+# if resume_from_checkpoint == True:
+#     model = OPTForCausalLM.from_pretrained(model_checkpoint)
 
-optimizer = AdamW(model.parameters(), lr=3e-5)
+optimizer = AdamW(model.parameters(), lr=2e-4)
 
 # Load tokenizer
-tokenizer = GPT2Tokenizer.from_pretrained("facebook/opt-350m")
+tokenizer = GPT2Tokenizer.from_pretrained("facebook/opt-125m")
 
 # Load dataset
 load_train_dataset = load_dataset('conceptofmind/code-train-dedup')
@@ -127,6 +127,7 @@ for epoch in range(EPOCHS):
         # Do training
         loss = model(**batch).loss
         loss = loss / gradient_accumulation_steps
+        print(loss)
         accelerator.backward(loss)
 
         accelerator.clip_grad_norm_(model.parameters(), 1.0)
@@ -141,8 +142,8 @@ for epoch in range(EPOCHS):
         if step % save_every == 0:
             if accelerator.is_main_process:
                 unwrapped_model = accelerator.unwrap_model(model)
-                unwrapped_model.push_to_hub("code-350-model", commit_message=f"step {step}")
+                unwrapped_model.push_to_hub("code-125-model", commit_message=f"step {step}")
 
 if accelerator.is_main_process:
     unwrapped_final_model = accelerator.unwrap_model(model)
-    unwrapped_final_model.push_to_hub("code-model-final-350", commit_message=f"step {step}")  
+    unwrapped_final_model.push_to_hub("code-model-final-125", commit_message=f"step {step}")  
