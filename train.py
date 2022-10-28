@@ -127,7 +127,8 @@ for epoch in range(EPOCHS):
         # Do training
         loss = model(**batch).loss
         loss = loss / gradient_accumulation_steps
-        print(loss)
+        with accelerator.main_process_first():
+            print(loss)
         accelerator.backward(loss)
 
         accelerator.clip_grad_norm_(model.parameters(), 1.0)
