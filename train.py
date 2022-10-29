@@ -15,7 +15,7 @@ accelerator = Accelerator()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--seq_len', default = 2048, type = int)
-parser.add_argument('--batch_size', default = 8, type = int)
+parser.add_argument('--batch_size', default = 4, type = int)
 parser.add_argument('--num_proc', default = 16, type = int)
 parser.add_argument('--gradient_accumulation_steps', default = 1, type = int)
 parser.add_argument('--epochs', default = 1, type = int)
@@ -39,8 +39,8 @@ model_checkpoint = args.model_checkpoint
 
 model = OPTForCausalLM.from_pretrained("facebook/opt-125m")
 
-# if resume_from_checkpoint == True:
-#     model = OPTForCausalLM.from_pretrained(model_checkpoint)
+if resume_from_checkpoint == True:
+    model = OPTForCausalLM.from_pretrained(model_checkpoint)
 
 optimizer = AdamW(model.parameters(), lr=2e-4)
 

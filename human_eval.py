@@ -14,7 +14,7 @@ import transformers
 from accelerate import Accelerator
 from accelerate.utils import set_seed
 from arguments import HumanEvalArguments
-from transformers import AutoModelForCausalLM, CodeGenTokenizer, AutoTokenizer, HfArgumentParser, StoppingCriteria, StoppingCriteriaList
+from transformers import AutoModelForCausalLM, AutoTokenizer, HfArgumentParser, StoppingCriteria, StoppingCriteriaList
 
 
 EOF_STRINGS = ["\nclass", "\ndef", "\n#", "\n@", "\nprint", "\nif"]
@@ -156,7 +156,7 @@ def main():
     set_seed(args.seed, device_specific=True)
 
     # Load model and tokenizer
-    tokenizer = CodeGenTokenizer.from_pretrained("Salesforce/codegen-350M-mono")
+    tokenizer = AutoTokenizer.from_pretrained("Salesforce/codegen-350M-mono")
     tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained("Salesforce/codegen-350M-mono")
 
